@@ -140,7 +140,16 @@ python mfcc-search-torch.py -t target.wav -s query.wav -d cpu
 ### 可视化输出
 
 - **Librosa 版本**：生成相似度曲线图
-- **PyTorch 版本**：生成包含相似度曲线和性能分析的图表，保存为 `mfcc_visualization.png`
+- **PyTorch 版本**：生成包含相似度曲线和性能分析的图表，保存为 `mfcc_torch_visualization.png`
+
+![MFCC 可视化结果](image/mfcc_torch_visualization.png)
+
+可视化结果包含四个子图：
+1. **源音频 MFCC 特征**：显示查询片段的 MFCC 系数热图
+2. **目标音频 MFCC 特征**：显示目标音频的 MFCC 系数热图，并标记最佳匹配位置
+3. **相似度曲线**：展示滑动窗口在不同位置的相似度变化
+4. **性能分析**：显示多次比对的速度统计信息
+
 
 ## 技术细节
 

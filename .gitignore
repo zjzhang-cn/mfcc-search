@@ -11,3 +11,4 @@ wheels/
 *.wav
 .vscode
 *.png
+!image/*.png
