@@ -281,11 +281,50 @@ if __name__ == "__main__":
             print(f"  {i}. {transfer['name']}")
             print(f"     大小: {transfer['size_mb']:.2f} MB | 时间: {transfer['time']:.4f}秒 | {transfer['from']} -> {transfer['to']}")
 
-    # 绘制相似度曲线
-    plt.figure(figsize=(12, 8))
+    # 绘制相似度曲线和MFCC特征
+    plt.figure(figsize=(14, 12))
     
-    # 第一个子图：相似度曲线
-    plt.subplot(2, 1, 1)
+    # 将MFCC数据转移到CPU用于绘图
+    target_mfcc_cpu = target_mfcc.cpu().numpy()
+    source_mfcc_cpu = source_mfcc.cpu().numpy()
+    
+    # 计算时间轴和统一的横坐标范围
+    source_time_axis = np.arange(source_mfcc_cpu.shape[1]) * hop_length / sr
+    target_time_axis = np.arange(target_mfcc_cpu.shape[1]) * hop_length / sr
+    max_time = max(source_time_axis[-1], target_time_axis[-1])
+    
+    # 第一个子图：源音频MFCC
+    plt.subplot(4, 1, 1)
+    plt.imshow(source_mfcc_cpu, aspect='auto', origin='lower', cmap='viridis', 
+               extent=[0, source_time_axis[-1], 0, n_mfcc])
+    plt.colorbar(label='MFCC 系数值')
+    plt.xlim(0, max_time)  # 统一横坐标范围
+    plt.xlabel('时间 (秒)')
+    plt.ylabel('MFCC 系数')
+    plt.title(f'源音频 MFCC 特征 (查询片段) - 时长: {source_time_axis[-1]:.2f}秒')
+    plt.grid(True, alpha=0.3)
+    
+    # 第二个子图：目标音频MFCC
+    plt.subplot(4, 1, 2)
+    plt.imshow(target_mfcc_cpu, aspect='auto', origin='lower', cmap='viridis',
+               extent=[0, target_time_axis[-1], 0, n_mfcc])
+    plt.colorbar(label='MFCC 系数值')
+    # 标记最佳匹配区域
+    match_end_time = results['best_time'] + results['query_duration']
+    plt.axvline(x=results['best_time'], color='r', linestyle='--', linewidth=2,
+                label=f'匹配起点 ({results["best_time"]:.2f}秒)')
+    plt.axvline(x=match_end_time, color='orange', linestyle='--', linewidth=2,
+                label=f'匹配终点 ({match_end_time:.2f}秒)')
+    plt.axvspan(results['best_time'], match_end_time, alpha=0.2, color='red')
+    plt.xlim(0, max_time)  # 统一横坐标范围
+    plt.xlabel('时间 (秒)')
+    plt.ylabel('MFCC 系数')
+    plt.title(f'目标音频 MFCC 特征 - 时长: {target_time_axis[-1]:.2f}秒')
+    plt.legend(loc='upper right')
+    plt.grid(True, alpha=0.3)
+    
+    # 第三个子图：相似度曲线
+    plt.subplot(4, 1, 3)
     time_positions = np.arange(len(results['similarities'])) * hop_length / sr
     plt.plot(time_positions, results['similarities'], linewidth=1)
     plt.axvline(x=results['best_time'], color='r', linestyle='--',
@@ -298,8 +337,8 @@ if __name__ == "__main__":
     plt.legend()
     plt.grid(True, alpha=0.3)
     
-    # 第二个子图：比对速度分布
-    plt.subplot(2, 1, 2)
+    # 第四个子图：比对速度分布
+    plt.subplot(4, 1, 4)
     plt.plot(range(1, iterations+1), matching_times, marker='o', markersize=4, linewidth=1)
     plt.axhline(y=avg_time, color='r', linestyle='--', alpha=0.7, 
                 label=f'平均时间 ({avg_time:.4f}秒)')
