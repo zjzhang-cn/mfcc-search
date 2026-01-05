@@ -6,8 +6,8 @@ import argparse
 import time
 
 # 设置中文字体
-plt.rcParams['font.sans-serif'] = ['SimHei', 'Microsoft YaHei']  # 黑体或微软雅黑
-plt.rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
+#plt.rcParams['font.sans-serif'] = ['SimHei', 'Microsoft YaHei']  # 黑体或微软雅黑
+#plt.rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
 
 # 解析命令行参数
 parser = argparse.ArgumentParser(description='音频MFCC特征提取和相似度计算')
@@ -203,12 +203,12 @@ plt.subplot(2, 1, 1)
 time_positions = np.arange(len(results['similarities'])) * hop_length / sr
 plt.plot(time_positions, results['similarities'], linewidth=1)
 plt.axvline(x=results['best_time'], color='r', linestyle='--',
-            label=f'最佳匹配位置 ({results["best_time"]:.2f}秒)')
+          label=f'Best match position ({results["best_time"]:.2f}s)')
 plt.axhline(y=results['best_similarity'], color='g', linestyle='--',
-            alpha=0.5, label=f'最佳相似度 ({results["best_similarity"]:.4f})')
-plt.xlabel('时间 (秒)')
-plt.ylabel('相似度')
-plt.title('滑动窗口相似度曲线 (Librosa)')
+          alpha=0.5, label=f'Best similarity ({results["best_similarity"]:.4f})')
+plt.xlabel('Time (s)')
+plt.ylabel('Similarity')
+plt.title('Sliding window similarity (Librosa)')
 plt.legend()
 plt.grid(True, alpha=0.3)
 
@@ -216,13 +216,13 @@ plt.grid(True, alpha=0.3)
 plt.subplot(2, 1, 2)
 plt.plot(range(1, iterations+1), matching_times, marker='o', markersize=4, linewidth=1)
 plt.axhline(y=avg_time, color='r', linestyle='--', alpha=0.7, 
-            label=f'平均时间 ({avg_time:.4f}秒)')
+          label=f'Average time ({avg_time:.4f}s)')
 plt.fill_between(range(1, iterations+1), 
                  avg_time - std_time, avg_time + std_time, 
-                 alpha=0.2, color='red', label=f'±1标准差')
-plt.xlabel('比对次数')
-plt.ylabel('耗时 (秒)')
-plt.title(f'多次比对速度分析 (共{iterations}次)')
+              alpha=0.2, color='red', label='±1 standard deviation')
+plt.xlabel('Iteration')
+plt.ylabel('Duration (s)')
+plt.title(f'Timing across runs ({iterations} runs)')
 plt.legend()
 plt.grid(True, alpha=0.3)
 

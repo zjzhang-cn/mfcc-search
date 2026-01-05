@@ -19,8 +19,8 @@ data_transfer_stats = {
 }
 
 # 设置中文字体
-plt.rcParams['font.sans-serif'] = ['SimHei', 'Microsoft YaHei']  # 黑体或微软雅黑
-plt.rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
+#plt.rcParams['font.sans-serif'] = ['SimHei', 'Microsoft YaHei']  # 黑体或微软雅黑
+#plt.rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
 
 
 def transfer_to_device(tensor: torch.Tensor, device: torch.device, name: str = ""):
@@ -297,29 +297,29 @@ if __name__ == "__main__":
     plt.subplot(4, 1, 1)
     plt.imshow(source_mfcc_cpu, aspect='auto', origin='lower', cmap='viridis', 
                extent=[0, source_time_axis[-1], 0, n_mfcc])
-    plt.colorbar(label='MFCC 系数值')
+    plt.colorbar(label='MFCC coefficient value')
     plt.xlim(0, max_time)  # 统一横坐标范围
-    plt.xlabel('时间 (秒)')
-    plt.ylabel('MFCC 系数')
-    plt.title(f'源音频 MFCC 特征 (查询片段) - 时长: {source_time_axis[-1]:.2f}秒')
+    plt.xlabel('Time (s)')
+    plt.ylabel('MFCC coefficient')
+    plt.title(f'Source MFCC (query clip) - duration: {source_time_axis[-1]:.2f}s')
     plt.grid(True, alpha=0.3)
     
     # 第二个子图：目标音频MFCC
     plt.subplot(4, 1, 2)
     plt.imshow(target_mfcc_cpu, aspect='auto', origin='lower', cmap='viridis',
                extent=[0, target_time_axis[-1], 0, n_mfcc])
-    plt.colorbar(label='MFCC 系数值')
+    plt.colorbar(label='MFCC coefficient value')
     # 标记最佳匹配区域
     match_end_time = results['best_time'] + results['query_duration']
     plt.axvline(x=results['best_time'], color='r', linestyle='--', linewidth=2,
-                label=f'匹配起点 ({results["best_time"]:.2f}秒)')
+                label=f'Match start ({results["best_time"]:.2f}s)')
     plt.axvline(x=match_end_time, color='orange', linestyle='--', linewidth=2,
-                label=f'匹配终点 ({match_end_time:.2f}秒)')
+                label=f'Match end ({match_end_time:.2f}s)')
     plt.axvspan(results['best_time'], match_end_time, alpha=0.2, color='red')
     plt.xlim(0, max_time)  # 统一横坐标范围
-    plt.xlabel('时间 (秒)')
-    plt.ylabel('MFCC 系数')
-    plt.title(f'目标音频 MFCC 特征 - 时长: {target_time_axis[-1]:.2f}秒')
+    plt.xlabel('Time (s)')
+    plt.ylabel('MFCC coefficient')
+    plt.title(f'Target MFCC - duration: {target_time_axis[-1]:.2f}s')
     plt.legend(loc='upper right')
     plt.grid(True, alpha=0.3)
     
@@ -328,12 +328,12 @@ if __name__ == "__main__":
     time_positions = np.arange(len(results['similarities'])) * hop_length / sr
     plt.plot(time_positions, results['similarities'], linewidth=1)
     plt.axvline(x=results['best_time'], color='r', linestyle='--',
-                label=f'最佳匹配位置 ({results["best_time"]:.2f}秒)')
+                label=f'Best match position ({results["best_time"]:.2f}s)')
     plt.axhline(y=results['best_similarity'], color='g', linestyle='--',
-                alpha=0.5, label=f'最佳相似度 ({results["best_similarity"]:.4f})')
-    plt.xlabel('时间 (秒)')
-    plt.ylabel('相似度')
-    plt.title('滑动窗口相似度曲线 (PyTorch)')
+                alpha=0.5, label=f'Best similarity ({results["best_similarity"]:.4f})')
+    plt.xlabel('Time (s)')
+    plt.ylabel('Similarity')
+    plt.title('Sliding window similarity (PyTorch)')
     plt.legend()
     plt.grid(True, alpha=0.3)
     
@@ -341,13 +341,13 @@ if __name__ == "__main__":
     plt.subplot(4, 1, 4)
     plt.plot(range(1, iterations+1), matching_times, marker='o', markersize=4, linewidth=1)
     plt.axhline(y=avg_time, color='r', linestyle='--', alpha=0.7, 
-                label=f'平均时间 ({avg_time:.4f}秒)')
+                 label=f'Average time ({avg_time:.4f}s)')
     plt.fill_between(range(1, iterations+1), 
                      avg_time - std_time, avg_time + std_time, 
-                     alpha=0.2, color='red', label=f'±1标准差')
-    plt.xlabel('比对次数')
-    plt.ylabel('耗时 (秒)')
-    plt.title(f'多次比对速度分析 (共{iterations}次)')
+                     alpha=0.2, color='red', label='±1 standard deviation')
+    plt.xlabel('Iteration')
+    plt.ylabel('Duration (s)')
+    plt.title(f'Timing across runs ({iterations} runs)')
     plt.legend()
     plt.grid(True, alpha=0.3)
     

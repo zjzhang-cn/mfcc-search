@@ -58,6 +58,7 @@ uv sync
 ### 使用 pip
 
 ```bash
+docker run --rm -it -v $PWD:/workspace pytorch/pytorch:2.5.1-cuda12.4-cudnn9-runtime bash
 pip install -r requirements.txt
 ```
 
