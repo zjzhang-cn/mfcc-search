@@ -10,6 +10,8 @@ dependencies = [
     "numpy>=2.3.0",
     "pip>=25.3",
     "scipy>=1.10.0",
+    "sounddevice>=0.4.6",
+    "soundfile>=0.12.1",
     "torch==2.8.0",
     "torchvision==0.23.0",
     "torchaudio==2.8.0",    
