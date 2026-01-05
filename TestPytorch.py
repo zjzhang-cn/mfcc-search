@@ -69,9 +69,9 @@ fig, axes = plt.subplots(3, 1, figsize=(12, 10))
 
 # 1. 绘制原始波形
 axes[0].plot(t.numpy(), waveform.squeeze(0).numpy())
-axes[0].set_title('原始音频波形 (440Hz 正弦波)', fontsize=14, fontweight='bold')
-axes[0].set_xlabel('时间 (秒)')
-axes[0].set_ylabel('振幅')
+axes[0].set_title('Raw waveform (440Hz sine)', fontsize=14, fontweight='bold')
+axes[0].set_xlabel('Time (s)')
+axes[0].set_ylabel('Amplitude')
 axes[0].grid(True, alpha=0.3)
 
 # 2. 绘制 MFCC 热图
@@ -83,18 +83,18 @@ im = axes[1].imshow(
     extent=[0, duration, 0, n_mfcc],
     cmap='viridis'
 )
-axes[1].set_title('MFCC 特征热图', fontsize=14, fontweight='bold')
-axes[1].set_xlabel('时间 (秒)')
-axes[1].set_ylabel('MFCC 系数')
-plt.colorbar(im, ax=axes[1], label='幅度')
+axes[1].set_title('MFCC feature heatmap', fontsize=14, fontweight='bold')
+axes[1].set_xlabel('Time (s)')
+axes[1].set_ylabel('MFCC coefficient')
+plt.colorbar(im, ax=axes[1], label='Magnitude')
 
 # 3. 绘制前几个 MFCC 系数随时间的变化
 n_coeff_to_plot = 13
 for i in range(n_coeff_to_plot):
     axes[2].plot(time_frames, mfcc_np[i, :], label=f'MFCC {i+1}', alpha=0.7)
-axes[2].set_title(f'前 {n_coeff_to_plot} 个 MFCC 系数随时间变化', fontsize=14, fontweight='bold')
-axes[2].set_xlabel('时间 (秒)')
-axes[2].set_ylabel('MFCC 值')
+axes[2].set_title(f'First {n_coeff_to_plot} MFCC coefficients over time', fontsize=14, fontweight='bold')
+axes[2].set_xlabel('Time (s)')
+axes[2].set_ylabel('MFCC value')
 axes[2].legend(loc='upper right')
 axes[2].grid(True, alpha=0.3)
 
