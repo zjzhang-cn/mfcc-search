@@ -1,6 +1,6 @@
 # MFCC-Search
 
-基于 MFCC（梅尔频率倒谱系数）特征的音频相似度搜索工具。支持使用 Librosa 和 PyTorch（支持 GPU 加速）两种实现方式。
+基于 MFCC（梅尔频率倒谱系数）特征的音频相似度搜索工具。支持离线音频文件匹配和实时麦克风音频匹配两种模式。
 
 ## 项目简介
 
@@ -9,23 +9,34 @@ MFCC-Search 是一个用于音频片段匹配和相似度计算的 Python 工具
 - 提取音频的 MFCC 特征
 - 计算两个音频文件的整体相似度
 - 使用滑动窗口在目标音频中搜索与查询音频最匹配的片段
-- 可视化相似度曲线
+- **实时麦克风采集并进行音频匹配**
+- 可视化相似度曲线和 MFCC 特征
 - 支持 CPU 和 GPU（CUDA）加速计算
 
 ## 功能特性
 
-### 两种实现方式
+### 三种使用模式
 
-1. **Librosa 版本** (`mfcc-search-librosa.py`)
+1. **Librosa 离线版本** (`mfcc-search-librosa.py`)
    - 基于 Librosa 库实现
    - 简单易用，适合快速原型开发
    - CPU 计算
+   - 离线音频文件匹配
 
-2. **PyTorch 版本** (`mfcc-search-torch.py`)
+2. **PyTorch 离线版本** (`mfcc-search-torch.py`)
    - 基于 PyTorch 和 TorchAudio 实现
    - 支持 GPU 加速
    - 包含性能基准测试功能
    - 提供详细的数据传输和计算时间统计
+   - 离线音频文件匹配
+
+3. **实时麦克风匹配** (`realtime_mfcc_matching.py`) ⭐ 新功能
+   - 实时采集麦克风音频
+   - 使用滑动窗口进行实时匹配
+   - 实时可视化相似度曲线和 MFCC 特征
+   - 可配置相似度阈值
+   - 可选保存高相似度音频片段
+   - 在参考音频 MFCC 上标记匹配位置
 
 ### 核心功能
 
@@ -71,12 +82,65 @@ pip install -r requirements.txt
 - numpy >= 2.3.0
 - scipy >= 1.10.0
 - matplotlib >= 3.10.8
+- sounddevice >= 0.4.6（实时麦克风采集）
+- soundfile >= 0.12.1（音频文件保存）
 
 **注意**：PyTorch 版本配置为使用 CUDA 12.9 加速。如果您的系统不支持 CUDA，程序会自动回退到 CPU 模式。
 
 ## 使用方法
 
-### Librosa 版本
+### 1. 实时麦克风匹配（新功能）
+
+实时采集麦克风音频并与参考音频进行匹配，支持实时可视化。
+
+```bash
+python realtime_mfcc_matching.py -r <参考音频路径> [选项]
+```
+
+**基本参数**：
+- `-r, --reference`：参考音频文件路径（必需）
+- `-w, --window`：音频窗口大小（秒），默认 1.0
+- `-d, --duration`：采集总时长（秒），默认无限
+- `--threshold`：相似度阈值（0.0-1.0），默认 0.95
+- `--device`：音频设备索引
+- `--save`：保存超过阈值的音频片段（默认不保存）
+- `--no-plot`：禁用实时可视化
+- `--list-devices`：列出可用音频设备
+
+**使用示例**：
+
+```bash
+# 基本使用（阈值 95%，不保存文件）
+python realtime_mfcc_matching.py -r audio/busynow.wav
+
+# 降低阈值到 90% 并保存音频
+python realtime_mfcc_matching.py -r audio/busynow.wav --threshold 0.9 --save
+
+# 自定义窗口大小为 2 秒，运行 60 秒
+python realtime_mfcc_matching.py -r audio/busynow.wav -w 2.0 -d 60
+
+# 禁用可视化，仅在控制台输出
+python realtime_mfcc_matching.py -r audio/busynow.wav --no-plot
+
+# 列出可用的音频设备
+python realtime_mfcc_matching.py -r audio/busynow.wav --list-devices
+
+# 指定音频设备
+python realtime_mfcc_matching.py -r audio/busynow.wav --device 1
+```
+
+**实时可视化窗口**：
+- **顶部图**：实时相似度曲线（最近 10 秒）
+- **中部图**：捕获的高相似度音频片段的 MFCC 特征
+- **底部图**：参考音频的 MFCC 特征，红色标记显示匹配位置
+
+**输出**：
+- 实时显示当前相似度和最佳匹配位置
+- 检测到高相似度片段时显示提醒
+- 可选保存音频片段到 `high_similarity_segments/` 目录
+- 程序结束时显示所有匹配记录统计
+
+### 2. Librosa 离线版本
 
 ```bash
 python mfcc-search-librosa.py -t <目标音频路径> -s <查询音频路径>
@@ -87,7 +151,7 @@ python mfcc-search-librosa.py -t <目标音频路径> -s <查询音频路径>
 python mfcc-search-librosa.py -t audio/target.wav -s audio/query.wav -n 100
 ```
 
-### PyTorch 版本
+### 3. PyTorch 离线版本
 
 ```bash
 python mfcc-search-torch.py -t <目标音频路径> -s <查询音频路径> [-n 迭代次数] [-d 设备]
@@ -154,6 +218,8 @@ python mfcc-search-torch.py -t audio/target.wav -s audio/query.wav -n 100 -d cpu
 3. **相似度曲线**：展示滑动窗口在不同位置的相似度变化
 4. **性能分析**：显示多次比对的速度统计信息
 
+- **Librosa 版本**：实时可视化
+![MFCC Librosa 实时可视化结果](image/realtime_mfcc_matching.png)
 
 ## 技术细节
 
@@ -191,12 +257,31 @@ PyTorch 版本支持 CUDA 加速，可以显著提升处理速度。程序会自
 
 ```
 mfcc-search/
-├── mfcc-search-librosa.py      # Librosa 实现版本
-├── mfcc-search-torch.py        # PyTorch 实现版本
+├── mfcc-search-librosa.py      # Librosa 离线实现版本
+├── mfcc-search-torch.py        # PyTorch 离线实现版本
+├── realtime_mfcc_matching.py   # 实时麦克风匹配版本 ⭐
 ├── TestPytorch.py              # PyTorch 测试文件
 ├── pyproject.toml              # 项目配置文件
+├── requirements.txt            # 依赖列表
+├── audio/                      # 音频文件目录
+├── high_similarity_segments/   # 保存的高相似度片段
 └── README.md                   # 项目说明文档
 ```
+
+## 应用场景
+
+### 离线音频匹配
+- 音频片段识别和定位
+- 音乐指纹和版权检测
+- 音频相似度分析
+- 性能基准测试
+
+### 实时麦克风匹配
+- 实时音频监控和识别
+- 语音命令检测
+- 音频触发器
+- 实时音频质量检测
+- 现场音频匹配应用
 
 ## 许可证
 
