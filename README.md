@@ -83,7 +83,7 @@ python mfcc-search-librosa.py -t <目标音频路径> -s <查询音频路径>
 
 **示例**：
 ```bash
-python mfcc-search-librosa.py -t target.wav -s query.wav
+python mfcc-search-librosa.py -t audio/target.wav -s audio/query.wav
 ```
 
 ### PyTorch 版本
@@ -104,13 +104,13 @@ python mfcc-search-torch.py -t <目标音频路径> -s <查询音频路径> [-n 
 **示例**：
 ```bash
 # 自动选择设备，执行 10 次比对
-python mfcc-search-torch.py -t target.wav -s query.wav
+python mfcc-search-torch.py -t audio/target.wav -s audio/query.wav
 
 # 使用 GPU，执行 100 次比对进行性能测试
-python mfcc-search-torch.py -t target.wav -s query.wav -n 100 -d cuda
+python mfcc-search-torch.py -t audio/target.wav -s audio/query.wav -n 100 -d cuda
 
 # 强制使用 CPU
-python mfcc-search-torch.py -t target.wav -s query.wav -d cpu
+python mfcc-search-torch.py -t audio/target.wav -s audio/query.wav -n 100 -d cpu
 ```
 
 ## 输出说明
