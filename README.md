@@ -221,6 +221,8 @@ python mfcc-search-torch.py -t audio/target.wav -s audio/query.wav -n 100 -d cpu
 - **Librosa 版本**：实时可视化
 ![MFCC Librosa 实时可视化结果](image/realtime_mfcc_matching.png)
 
+[video](./realtime.mp4)
+
 ## 技术细节
 
 ### MFCC 参数配置
