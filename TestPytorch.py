@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # 设置中文字体
-plt.rcParams['font.sans-serif'] = ['SimHei', 'Microsoft YaHei']
-plt.rcParams['axes.unicode_minus'] = False
+#plt.rcParams['font.sans-serif'] = ['SimHei', 'Microsoft YaHei']
+#plt.rcParams['axes.unicode_minus'] = False
 
 # 检查 PyTorch 版本
 print("PyTorch 版本:", torch.__version__)

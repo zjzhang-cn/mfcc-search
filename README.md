@@ -84,7 +84,7 @@ python mfcc-search-librosa.py -t <目标音频路径> -s <查询音频路径>
 
 **示例**：
 ```bash
-python mfcc-search-librosa.py -t audio/target.wav -s audio/query.wav
+python mfcc-search-librosa.py -t audio/target.wav -s audio/query.wav -n 100
 ```
 
 ### PyTorch 版本
